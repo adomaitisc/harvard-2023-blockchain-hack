@@ -7,12 +7,22 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { daysOfWeekToDecimalSum, decimalSumToDaysOfWeek } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { Autocomplete } from "./autocomplete";
+
+type Suggestion = {
+  formatted: string;
+  lat: number;
+  lon: number;
+};
 
 export function CreateTrips() {
-  const [formData, setFormData] = useState({
-    origin: "",
-    destination: "",
-  });
+  const [origin, setOrigin] = useState("");
+  const [destination, setDestination] = useState("");
+  const [originLatLon, setOriginLatLon] = useState<[string, string]>(["", ""]);
+  const [destinationLatLon, setDestinationLatLon] = useState<[string, string]>([
+    "",
+    "",
+  ]);
   const [isOneTimeTrip, setIsOneTimeTrip] = useState(false);
   const [time, setTime] = useState("");
   const [date, setDate] = useState("");
@@ -32,19 +42,19 @@ export function CreateTrips() {
     }
   }
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  }
-
   function handleDriverDataChange(e: React.ChangeEvent<HTMLInputElement>) {
     setDriverData({ ...driverData, [e.target.name]: e.target.value });
   }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    console.log(originLatLon);
+    console.log(destinationLatLon);
     const data = {
-      origin: formData.origin,
-      destination: formData.destination,
+      origin_latitute: originLatLon[0],
+      origin_longitute: originLatLon[1],
+      destination_latitute: destinationLatLon[0],
+      destination_longitute: destinationLatLon[1],
       trip: isOneTimeTrip ? "One-time" : "Regular",
       time,
       datetime: date,
@@ -61,11 +71,11 @@ export function CreateTrips() {
   }
 
   useEffect(() => {
-    if (formData.origin.length < 3) {
+    if (origin.length < 3) {
       setIsSubmissable(false);
       return;
     }
-    if (formData.destination.length < 3) {
+    if (destination.length < 3) {
       setIsSubmissable(false);
       return;
     }
@@ -95,7 +105,16 @@ export function CreateTrips() {
       }
     }
     setIsSubmissable(true);
-  }, [formData, isOneTimeTrip, time, date, selectedDays, isDriver, driverData]);
+  }, [
+    origin,
+    destination,
+    isOneTimeTrip,
+    time,
+    date,
+    selectedDays,
+    isDriver,
+    driverData,
+  ]);
 
   return (
     <>
@@ -103,17 +122,17 @@ export function CreateTrips() {
         onSubmit={onSubmit}
         className="w-full p-8 flex flex-col max-w-lg mx-auto bg-white border border-zinc-100 shadow-md rounded-t-3xl gap-4"
       >
-        <Input
-          onChange={handleChange}
-          value={formData.origin}
-          name="origin"
-          placeholder="From ZIP"
+        <Autocomplete
+          placeholder="From"
+          data={origin}
+          setData={setOrigin}
+          setLatLon={(lat, lon) => setOriginLatLon([lat, lon])}
         />
-        <Input
-          onChange={handleChange}
-          value={formData.destination}
-          name="destination"
-          placeholder="To ZIP"
+        <Autocomplete
+          placeholder="To"
+          data={destination}
+          setData={setDestination}
+          setLatLon={(lat, lon) => setDestinationLatLon([lat, lon])}
         />
         <div className="flex items-center gap-2 py-2">
           <Switch

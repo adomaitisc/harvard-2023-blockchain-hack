@@ -5,6 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { daysOfWeekToDecimalSum, decimalSumToDaysOfWeek } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
 export function CreateTrips() {
@@ -42,18 +43,21 @@ export function CreateTrips() {
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const data = {
-      ...formData,
-      isOneTimeTrip,
+      origin: formData.origin,
+      destination: formData.destination,
+      trip: isOneTimeTrip ? "One-time" : "Regular",
       time,
-      date,
-      selectedDays,
-      isDriver,
-      ...driverData,
+      datetime: date,
+      schedule: daysOfWeekToDecimalSum(selectedDays),
+      price: driverData.price,
+      seats: driverData.seats,
+      driver: isDriver,
     };
     const res = await fetch("/api/trip", {
       method: "POST",
       body: JSON.stringify(data),
     });
+    console.log(res);
   }
 
   useEffect(() => {
@@ -95,13 +99,6 @@ export function CreateTrips() {
 
   return (
     <>
-      {/* <code>{JSON.stringify(formData)}</code>
-      <code>{JSON.stringify(isOneTimeTrip)}</code>
-      <code>{JSON.stringify(selectedDays)}</code>
-      <code>{JSON.stringify(time)}</code>
-      <code>{JSON.stringify(date)}</code>
-      <code>{JSON.stringify(isDriver)}</code>
-      <code>{JSON.stringify(driverData)}</code> */}
       <form
         onSubmit={onSubmit}
         className="w-full p-8 flex flex-col max-w-lg mx-auto bg-white border border-zinc-100 shadow-md rounded-t-3xl gap-4"
@@ -133,31 +130,31 @@ export function CreateTrips() {
             <div className="flex flex-col gap-2">
               <Label className="font-normal">Select your commuting days</Label>
               <div className="flex gap-2">
-                <Checkbox onCheckedChange={() => handleAddDay("sunday")} />{" "}
+                <Checkbox onCheckedChange={() => handleAddDay("Sunday")} />{" "}
                 <Label className="font-normal">Sunday</Label>
               </div>
               <div className="flex gap-2">
-                <Checkbox onCheckedChange={() => handleAddDay("monday")} />{" "}
+                <Checkbox onCheckedChange={() => handleAddDay("Monday")} />{" "}
                 <Label className="font-normal">Monday</Label>
               </div>
               <div className="flex gap-2">
-                <Checkbox onCheckedChange={() => handleAddDay("tuesday")} />{" "}
+                <Checkbox onCheckedChange={() => handleAddDay("Tuesday")} />{" "}
                 <Label className="font-normal">Tuesday</Label>
               </div>
               <div className="flex gap-2">
-                <Checkbox onCheckedChange={() => handleAddDay("wednesday")} />{" "}
+                <Checkbox onCheckedChange={() => handleAddDay("Wednesday")} />{" "}
                 <Label className="font-normal">Wednesday</Label>
               </div>
               <div className="flex gap-2">
-                <Checkbox onCheckedChange={() => handleAddDay("thursday")} />{" "}
+                <Checkbox onCheckedChange={() => handleAddDay("Thursday")} />{" "}
                 <Label className="font-normal">Thursday</Label>
               </div>
               <div className="flex gap-2">
-                <Checkbox onCheckedChange={() => handleAddDay("friday")} />{" "}
+                <Checkbox onCheckedChange={() => handleAddDay("Friday")} />{" "}
                 <Label className="font-normal">Friday</Label>
               </div>
               <div className="flex gap-2">
-                <Checkbox onCheckedChange={() => handleAddDay("saturday")} />{" "}
+                <Checkbox onCheckedChange={() => handleAddDay("Saturday")} />{" "}
                 <Label className="font-normal">Saturday</Label>
               </div>
             </div>

@@ -2,6 +2,16 @@ import { conn } from "@/_lib/db/client";
 import { getServerSession } from "next-auth";
 import { v4 as uuidv4 } from "uuid";
 import { authOptions } from "../_utils/auth-options";
+import { Connex } from "@vechain/connex";
+import { BigNumber } from "bignumber.js"
+
+
+
+const connex = new Connex({
+    node: "https://testnet.vblocks.net/",
+    network: "test",
+    signer: "sync2"
+})
 
 type requestBody = {
     driver: number,
@@ -60,6 +70,8 @@ export async function POST(request: Request) {
             trip_confirmed_id,
             passenger
         ]);
+
+        transferToken(passenger_id, driver_id, price)
         
         return new Response(JSON.stringify({
             succes: true,
@@ -80,7 +92,7 @@ export async function POST(request: Request) {
         
     }
     
-    async function transferToken( signerAddress: string, toAddress: string, amount: number, addressContract: string ) {
+    async function transferToken( signerAddress: any, toAddress: any, amount: any ) {
         const transferABI = {
             'constant': false,
             'inputs': [
@@ -96,7 +108,7 @@ export async function POST(request: Request) {
             'name': 'transfer',
             'outputs': [
               {
-                'name': '',
+                'name': 'success',
                 'type': 'bool'
               }
             ],
@@ -104,5 +116,21 @@ export async function POST(request: Request) {
             'stateMutability': 'nonpayable',
             'type': 'function'
           }
-
-    }
+        const transerMethod = connex.thor.account(signerAddress).method(transferABI)
+        const energyClause = transerMethod.asClause(toAddress, new BigNumber(amount).multipliedBy(1e18).toNumber())
+        connex.vendor.sign("tx", [
+            {
+                to: toAddress,
+                value: new BigNumber(amount).multipliedBy(1e18).toNumber(),
+                data: "0x",
+                comment: `transfer ${amount} VET`,
+            },
+            {
+                comment: "transfer X VETHOR",
+                ...energyClause
+            }
+        ])
+        .signer(signerAddress).gas(200000).request().then(result => {
+            console.log(result)
+        })
+        }

@@ -4,15 +4,17 @@ import { v4 as uuidv4 } from "uuid";
 import { authOptions } from "../_utils/auth-options";
 
 type requestBody = {
-  origin: string;
-  destination: string;
-  trip: "Regular" | "One-time";
-  time?: string;
-  datetime?: Date;
-  schedule?: number;
-  price?: number;
-  seats?: number;
-  driver: boolean;
+  origin?: string,
+  latitude?: number,
+  longitude?: number,
+  destination?: string,
+  trip: "Regular" | "One-time",
+  time?: string,
+  datetime?: Date,
+  schedule?: number,
+  price?: number,
+  seats?: number,
+  driver: boolean
 };
 
 export async function POST(request: Request) {
@@ -31,23 +33,32 @@ export async function POST(request: Request) {
   try {
     let query;
     let sql;
-    const { origin, destination, trip } = data;
+    const { origin, destination, trip, longitude, latitude } = data;
     if (trip == "Regular") {
       const { time, schedule } = data;
       sql =
-        "INSERT INTO RegularTrip (trip_id, origin, destination, time, schedule) VALUES (?, ?, ?, ?, ?);";
+        "INSERT INTO RegularTrip (trip_id, origin, destination, time, schedule, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?);";
       query = await conn.execute(sql, [
         trip_id,
         origin,
         destination,
         time,
         schedule,
+        latitude,
+        longitude,
       ]);
     } else if (trip == "One-time") {
       const { datetime } = data;
       sql =
-        "INSERT INTO OnetimeTrip (trip_id, origin, destination, datetime) VALUES (?, ?, ?, ?);";
-      query = await conn.execute(sql, [trip_id, origin, destination, datetime]);
+        "INSERT INTO OnetimeTrip (trip_id, origin, destination, datetime, longitude, latitude) VALUES (?, ?, ?, ?, ?, ?);";
+      query = await conn.execute(sql, [
+        trip_id,
+        origin,
+        destination,
+        datetime,
+        longitude,
+        latitude,
+    ]);
     }
 
     // trip_id = query!.insertId

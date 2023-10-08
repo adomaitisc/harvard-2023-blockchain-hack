@@ -1,9 +1,13 @@
-import Image from 'next/image'
+import Image from "next/image";
+import { ConnectWallet } from "./connect-walllet";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      Hello world!
+    <main className="min-h-screen bg-neutral-200">
+      <div className="w-full max-w-3xl mx-auto h-screen bg-red-400/20">
+        {/* Header */}
+        <ConnectWallet />
+      </div>
     </main>
-  )
+  );
 }

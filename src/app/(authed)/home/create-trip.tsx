@@ -5,7 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { daysOfWeekToDecimalSum, decimalSumToDaysOfWeek } from "@/lib/utils";
+import { daysOfWeekToDecimalSum } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { Autocomplete } from "./autocomplete";
 
@@ -51,10 +51,10 @@ export function CreateTrips() {
     console.log(originLatLon);
     console.log(destinationLatLon);
     const data = {
-      origin_latitute: originLatLon[0],
-      origin_longitute: originLatLon[1],
-      destination_latitute: destinationLatLon[0],
-      destination_longitute: destinationLatLon[1],
+      origin_latitude: originLatLon[0],
+      origin_longitude: originLatLon[1],
+      destination_latitude: destinationLatLon[0],
+      destination_longitude: destinationLatLon[1],
       trip: isOneTimeTrip ? "One-time" : "Regular",
       time,
       datetime: date,
@@ -68,6 +68,7 @@ export function CreateTrips() {
       body: JSON.stringify(data),
     });
     console.log(res);
+    window.location.reload();
   }
 
   useEffect(() => {

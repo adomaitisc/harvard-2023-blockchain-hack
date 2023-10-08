@@ -4,17 +4,17 @@ import { v4 as uuidv4 } from "uuid";
 import { authOptions } from "../_utils/auth-options";
 
 type requestBody = {
-  origin_latitude?: number,
-  origin_longitude?: number,
-  destination_latitude?: number,
-  destination_longitude?: number,
-  trip: "Regular" | "One-time",
-  time?: string,
-  datetime?: Date,
-  schedule?: number,
-  price?: number,
-  seats?: number,
-  driver: boolean
+  origin_latitude: string;
+  origin_longitude: string;
+  destination_latitude: string;
+  destination_longitude: string;
+  trip: "Regular" | "One-time";
+  time?: string;
+  datetime?: Date;
+  schedule?: number;
+  price?: number;
+  seats?: number;
+  driver: boolean;
 };
 
 export async function POST(request: Request) {
@@ -29,11 +29,18 @@ export async function POST(request: Request) {
     );
   }
   const data: requestBody = await request.json();
+  console.log(data);
   let trip_id = uuidv4();
   try {
     let query;
     let sql;
-    const { destination_latitude, destination_longitude, trip, origin_latitude, origin_longitude } = data;
+    const {
+      destination_latitude,
+      destination_longitude,
+      trip,
+      origin_latitude,
+      origin_longitude,
+    } = data;
     if (trip == "Regular") {
       const { time, schedule } = data;
       sql =
@@ -58,7 +65,7 @@ export async function POST(request: Request) {
         destination_latitude,
         destination_longitude,
         datetime,
-    ]);
+      ]);
     }
 
     // trip_id = query!.insertId

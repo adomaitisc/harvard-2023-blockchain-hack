@@ -21,14 +21,14 @@ export function Header({ session }: { session: any }) {
   });
 
   return (
-    <div className="w-full flex items-center justify-between p-8 text-xs font-mono">
-      {/* Balance */}
-      <p className="px-2 py-1 bg-zinc-100 border border-zinc-200 rounded-full text-violet-600">
-        Balance: {balance} VET
-      </p>
+    <div className="w-full flex flex-col items-center gap-2 p-8 text-xs font-mono">
       {/* Account Number */}
       <p className="px-2 py-1 bg-zinc-100 border border-zinc-200 rounded-full">
         {session.user.email}
+      </p>
+      {/* Balance */}
+      <p className="px-2 py-1 bg-zinc-100 border border-zinc-200 rounded-full text-violet-600">
+        Balance: {balance} VET
       </p>
     </div>
   );

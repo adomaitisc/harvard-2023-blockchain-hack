@@ -89,9 +89,9 @@ export function ConnectWallet() {
     //   <button type="submit">Connect</button>
     // </form>
     <div className="absolute inset-0 flex flex-col justify-center bg-black/10 backdrop-blur-md">
-      <div className=" bg-white h-96 rounded-3xl p-8 w-full flex flex-col max-w-xs items-center gap-6 mx-auto">
+      <div className=" bg-white rounded-3xl p-8 w-full flex flex-col max-w-xs items-center gap-6 mx-auto">
         {registering ? (
-          <form onSubmit={onSubmit}>
+          <form onSubmit={onSubmit} className="flex flex-col gap-6">
             <h2 className="font-semibold text-xl text-center">
               Register your account
             </h2>

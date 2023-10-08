@@ -11,7 +11,6 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-neutral-100">
       <div className="w-full max-w-3xl mx-auto h-screen flex flex-col items-center justify-end">
-        <h1> I am home page</h1>
         <ConnectWallet />
       </div>
     </main>

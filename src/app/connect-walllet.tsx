@@ -1,6 +1,10 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import Connex from "@vechain/connex";
+import { signIn } from "next-auth/react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 const connex = new Connex({
@@ -10,6 +14,7 @@ const connex = new Connex({
 });
 export function ConnectWallet() {
   const [address, setAddress] = useState("");
+  const [registering, setRegistering] = useState(false);
 
   //   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
   //     e.preventDefault();
@@ -36,13 +41,40 @@ export function ConnectWallet() {
         },
       })
       .request()
-      .then((tx) => {
-        // SEND POST REQUEST TO SERVER
+      .then(async (tx) => {
         setAddress(tx.annex.signer);
-      })
-      .catch((err) => {
-        console.log(err);
+        const data = await signIn("credentials", {
+          address: tx.annex.signer,
+          redirect: false,
+        });
+        // @ts-ignore
+        if (!data.ok) {
+          setRegistering(true);
+        }
       });
+  }
+
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const name = e.currentTarget.fname.value;
+    const address = e.currentTarget.address.value;
+
+    const res = await fetch("/api/account", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, address }),
+    });
+
+    const body = await res.json();
+    console.log(body);
+
+    if (body.address) {
+      await signIn("credentials", {
+        address: body.address,
+      });
+    }
   }
 
   return (
@@ -56,12 +88,36 @@ export function ConnectWallet() {
     //   <input id="address" type="text" />
     //   <button type="submit">Connect</button>
     // </form>
-    <>
-      <button onClick={() => requestWallet()}>Connect Sync2 Wallet</button>
-      <p>{address}</p>
-    </>
+    <div className="absolute inset-0 flex flex-col justify-center bg-black/10 backdrop-blur-md">
+      <div className=" bg-white rounded-3xl p-8 w-full flex flex-col max-w-xs items-center gap-6 mx-auto">
+        {registering ? (
+          <form onSubmit={onSubmit} className="flex flex-col gap-6">
+            <h2 className="font-semibold text-xl text-center">
+              Register your account
+            </h2>
+            <Input id="address" disabled value={address} />
+            <Input id="fname" type="text" placeholder="Enter your name" />
+            <Button>Start Earning</Button>
+          </form>
+        ) : (
+          <>
+            <h2 className="font-semibold text-xl text-center">
+              Get where you need to
+              <br />
+              and earn for that
+            </h2>
+            <Image
+              src="/media/location.svg"
+              width={200}
+              height={200}
+              alt="location"
+            />
+            <Button onClick={() => requestWallet()}>
+              Connect your Sync2 Wallet
+            </Button>
+          </>
+        )}
+      </div>
+    </div>
   );
 }
-
-// 0x36075a001e7979d5119cf8f3e8c47a0c2f835010
-// 0x36075a001e7979d5119CF8f3E8c47A0C2F835010

@@ -4,7 +4,7 @@ export type User = {
 };
 
 export type RegularTrip = {
-    trip_id: number,
+    trip_id: string,
     origin: string,
     destination: string,
     distance: number,
@@ -15,7 +15,7 @@ export type RegularTrip = {
 };
 
 export type OnetimeTrip = {
-    trip_id: number,
+    trip_id: string,
     origin: string,
     destination: string,
     distance: number,
@@ -31,8 +31,8 @@ export type DriverPrefences = {
 };
 
 export type AccountTrips = {
-    account_id: number,
+    account_id: string,
     driver_prefences_id: number,
-    trip_id: number,
+    trip_id: string,
     trip: "Regular" | "One-time",
 };

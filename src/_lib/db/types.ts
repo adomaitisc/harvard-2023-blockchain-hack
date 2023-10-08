@@ -32,6 +32,7 @@ export type DriverPrefences = {
 
 export type AccountTrips = {
     account_id: number,
+    driver_prefences_id: number,
     trip_id: number,
     trip: "Regular" | "One-time",
 };

@@ -11,7 +11,7 @@ export default async function Layout({
   const session = await getServerSession(authOptions);
   if (!session) return redirect("/");
   return (
-    <div className="w-full max-w-3xl mx-auto h-screen flex flex-col items-center justify-between">
+    <div className="w-full max-w-3xl mx-auto h-screen flex flex-col items-center relative">
       <Header session={session} />
       {children}
     </div>

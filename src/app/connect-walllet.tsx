@@ -37,7 +37,7 @@ export function ConnectWallet() {
         purpose: "identification",
         payload: {
           type: "text",
-          content: "Hello World!",
+          content: "Sign this contract to earn VET",
         },
       })
       .request()

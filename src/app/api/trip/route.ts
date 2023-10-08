@@ -4,8 +4,10 @@ import { v4 as uuidv4 } from "uuid";
 import { authOptions } from "../_utils/auth-options";
 
 type requestBody = {
+  origin_formatted: string;
   origin_latitude: string;
   origin_longitude: string;
+  destination_formatted: string;
   destination_latitude: string;
   destination_longitude: string;
   trip: "Regular" | "One-time";
@@ -35,17 +37,21 @@ export async function POST(request: Request) {
     let query;
     let sql;
     const {
+      destination_formatted,
       destination_latitude,
       destination_longitude,
       trip,
+      origin_formatted,
       origin_latitude,
       origin_longitude,
     } = data;
     if (trip == "Regular") {
       const { time, schedule } = data;
       sql =
-        "INSERT INTO RegularTrip (trip_id, origin_latitude, origin_longitude, destination_latitude, destination_longitude, time, schedule) VALUES (?, ?, ?, ?, ?, ?, ?);";
+        "INSERT INTO RegularTrip (origin_formatted, destination_formatted, trip_id, origin_latitude, origin_longitude, destination_latitude, destination_longitude, time, schedule) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
       query = await conn.execute(sql, [
+        origin_formatted,
+        destination_formatted,
         trip_id,
         origin_latitude,
         origin_longitude,
@@ -57,8 +63,10 @@ export async function POST(request: Request) {
     } else if (trip == "One-time") {
       const { datetime } = data;
       sql =
-        "INSERT INTO OnetimeTrip (trip_id, origin_latitude, origin_longitude, destination_latitude, destination_longitude, datetime) VALUES (?, ?, ?, ?, ?, ?);";
+        "INSERT INTO OnetimeTrip (origin_formatted, destination_formatted, trip_id, origin_latitude, origin_longitude, destination_latitude, destination_longitude, datetime) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
       query = await conn.execute(sql, [
+        origin_formatted,
+        destination_formatted,
         trip_id,
         origin_latitude,
         origin_longitude,

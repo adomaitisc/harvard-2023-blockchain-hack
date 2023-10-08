@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { daysOfWeekToDecimalSum } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Autocomplete } from "./autocomplete";
 
 type Suggestion = {
@@ -51,8 +51,10 @@ export function CreateTrips() {
     console.log(originLatLon);
     console.log(destinationLatLon);
     const data = {
+      origin_formatted: origin,
       origin_latitude: originLatLon[0],
       origin_longitude: originLatLon[1],
+      destination_formatted: destination,
       destination_latitude: destinationLatLon[0],
       destination_longitude: destinationLatLon[1],
       trip: isOneTimeTrip ? "One-time" : "Regular",
@@ -121,7 +123,7 @@ export function CreateTrips() {
     <>
       <form
         onSubmit={onSubmit}
-        className="w-full p-8 flex flex-col max-w-lg mx-auto bg-white border border-zinc-100 shadow-md rounded-t-3xl gap-4"
+        className="w-full p-8 relative flex flex-col max-w-lg mx-auto bg-white border border-zinc-100 shadow-md rounded-t-3xl gap-4"
       >
         <Autocomplete
           placeholder="From"

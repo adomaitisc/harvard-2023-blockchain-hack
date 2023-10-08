@@ -4,10 +4,10 @@ import { v4 as uuidv4 } from "uuid";
 import { authOptions } from "../_utils/auth-options";
 
 type requestBody = {
-  origin?: string,
-  latitude?: number,
-  longitude?: number,
-  destination?: string,
+  origin_latitude?: number,
+  origin_longitude?: number,
+  destination_latitude?: number,
+  destination_longitude?: number,
   trip: "Regular" | "One-time",
   time?: string,
   datetime?: Date,
@@ -33,31 +33,31 @@ export async function POST(request: Request) {
   try {
     let query;
     let sql;
-    const { origin, destination, trip, longitude, latitude } = data;
+    const { destination_latitude, destination_longitude, trip, origin_latitude, origin_longitude } = data;
     if (trip == "Regular") {
       const { time, schedule } = data;
       sql =
-        "INSERT INTO RegularTrip (trip_id, origin, destination, time, schedule, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?);";
+        "INSERT INTO RegularTrip (trip_id, origin_latitude, origin_longitude, destination_latitude, destination_longitude, time, schedule) VALUES (?, ?, ?, ?, ?, ?, ?);";
       query = await conn.execute(sql, [
         trip_id,
-        origin,
-        destination,
+        origin_latitude,
+        origin_longitude,
+        destination_latitude,
+        destination_longitude,
         time,
         schedule,
-        latitude,
-        longitude,
       ]);
     } else if (trip == "One-time") {
       const { datetime } = data;
       sql =
-        "INSERT INTO OnetimeTrip (trip_id, origin, destination, datetime, longitude, latitude) VALUES (?, ?, ?, ?, ?, ?);";
+        "INSERT INTO OnetimeTrip (trip_id, origin_latitude, origin_longitude, destination_latitude, destination_longitude, datetime) VALUES (?, ?, ?, ?, ?, ?);";
       query = await conn.execute(sql, [
         trip_id,
-        origin,
-        destination,
+        origin_latitude,
+        origin_longitude,
+        destination_latitude,
+        destination_longitude,
         datetime,
-        longitude,
-        latitude,
     ]);
     }
 
